@@ -7,7 +7,6 @@ import invoiceRoutes from "./routes/invoiceRoutes.js";
 
 import { SERVER_RUNNING_MSG } from "./constants.js";
 
-
 const app = express();
 
 app.use(cors());
