@@ -102,7 +102,10 @@ export const createInvoice = (req, res) => {
       );
       console.log(recordsInserted);
       if (recordsInserted === invoice_details.length) {
-        const responseJson = { message: INVOICE_CREATED_SUCCESSFULLY, payload: { invoice_id: generatedInvoiceId } }
+        const responseJson = {
+          message: INVOICE_CREATED_SUCCESSFULLY,
+          payload: { invoice_id: generatedInvoiceId },
+        };
         res.status(201).json(responseJson);
       }
     }
@@ -117,7 +120,7 @@ export const deleteInvoice = (req, res) => {
       throw error;
     }
     if (!results.rows.length) {
-      res.send(INVOICE_NOT_FOUND);
+      res.status(200).json({ message: INVOICE_NOT_FOUND });
     } else {
       pool.query(deleteInvoiceDetailsQuery, [invoice_id], (error, results) => {
         if (error) {
@@ -130,7 +133,7 @@ export const deleteInvoice = (req, res) => {
             throw error;
           }
           if (results.rowCount) {
-            res.status(200).send(INVOICE_DELETED_SUCCESSFULLY);
+            res.status(200).json({ message: INVOICE_DELETED_SUCCESSFULLY });
           }
         });
       });
@@ -153,7 +156,7 @@ export const updateInvoice = (req, res) => {
       throw error;
     }
     if (!results.rows.length) {
-      res.send(INVOICE_NOT_FOUND);
+      res.status(200).json({ message: INVOICE_NOT_FOUND });
     } else {
       pool.query(
         updateInvoiceQuery,
@@ -205,7 +208,7 @@ export const updateInvoice = (req, res) => {
                 }
               );
               if (recordsInserted === invoice_details.length)
-                res.send(INVOICE_UPDATED_SUCCESSFULLY);
+                res.status(200).json({ message: INVOICE_UPDATED_SUCCESSFULLY });
             }
           );
         }

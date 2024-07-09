@@ -45,7 +45,7 @@ export const createProduct = (req, res) => {
       throw error;
     }
     if (parseInt(results.rows?.[0]?.count)) {
-      res.send(PRODUCT_NAME_ALREADY_EXISTS);
+      res.status(200).json({ message: PRODUCT_NAME_ALREADY_EXISTS });
     } else {
       const newProductId = generateRandomId();
       pool.query(
@@ -61,7 +61,10 @@ export const createProduct = (req, res) => {
             console.log(error);
             throw error;
           }
-          const responseJson = { message: PRODUCT_CREATED_SUCCESSFULLY, payload: { product_id: newProductId } }
+          const responseJson = {
+            message: PRODUCT_CREATED_SUCCESSFULLY,
+            payload: { product_id: newProductId },
+          };
           res.status(201).json(responseJson);
         }
       );
@@ -77,7 +80,7 @@ export const deleteProduct = (req, res) => {
       throw error;
     }
     if (!results.rows.length) {
-      res.send(PRODUCT_NOT_FOUND);
+      res.status(200).json({ message: PRODUCT_NOT_FOUND });
     } else {
       pool.query(deleteProductQuery, [product_id], (error, results) => {
         if (error) {
@@ -85,7 +88,7 @@ export const deleteProduct = (req, res) => {
           throw error;
         }
         if (results.rowCount) {
-          res.status(200).send(PRODUCT_DELETED_SUCCESSFULLY);
+          res.status(200).json({ message: PRODUCT_DELETED_SUCCESSFULLY });
         }
       });
     }
@@ -106,7 +109,7 @@ export const updateProduct = (req, res) => {
           throw error;
         }
         if (results.rowCount) {
-          res.status(200).send(PRODUCT_UPDATED_SUCCESSFULLY);
+          res.status(200).json({ message: PRODUCT_UPDATED_SUCCESSFULLY });
         }
       }
     );
@@ -118,7 +121,7 @@ export const updateProduct = (req, res) => {
       throw error;
     }
     if (!results.rows.length) {
-      res.send(PRODUCT_NOT_FOUND);
+      res.status(200).json({ message: PRODUCT_NOT_FOUND });
     } else {
       if (results.rows[0].product_name !== product_name) {
         pool.query(
@@ -130,7 +133,7 @@ export const updateProduct = (req, res) => {
               throw error;
             }
             if (parseInt(results.rows?.[0]?.count)) {
-              res.send(PRODUCT_NAME_ALREADY_EXISTS);
+              res.status(200).json({ message: PRODUCT_NAME_ALREADY_EXISTS });
             } else {
               saveProductData();
             }

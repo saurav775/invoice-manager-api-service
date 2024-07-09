@@ -52,7 +52,7 @@ export const createCustomer = (req, res) => {
         throw error;
       }
       if (parseInt(results.rows?.[0]?.count)) {
-        res.send(EMAIL_OR_PHONE_ALREADY_EXISTS);
+        res.status(200).json({ message: EMAIL_OR_PHONE_ALREADY_EXISTS });
       } else {
         const newCustomerId = generateRandomId();
         pool.query(
@@ -63,7 +63,10 @@ export const createCustomer = (req, res) => {
               console.log(error);
               throw error;
             }
-            const responseJson = { message: CUSTOMER_CREATED_SUCCESSFULLY, payload: { customer_id: newCustomerId } }
+            const responseJson = {
+              message: CUSTOMER_CREATED_SUCCESSFULLY,
+              payload: { customer_id: newCustomerId },
+            };
             res.status(201).json(responseJson);
           }
         );
@@ -80,7 +83,7 @@ export const deleteCustomer = (req, res) => {
       throw error;
     }
     if (!results.rows.length) {
-      res.send(CUSTOMER_NOT_FOUND);
+      res.status(200).json({ message: CUSTOMER_NOT_FOUND });
     } else {
       pool.query(deleteCustomerQuery, [customer_id], (error, results) => {
         if (error) {
@@ -88,7 +91,7 @@ export const deleteCustomer = (req, res) => {
           throw error;
         }
         if (results.rowCount) {
-          res.status(200).send(CUSTOMER_DELETED_SUCCESSFULLY);
+          res.status(200).json({ message: CUSTOMER_DELETED_SUCCESSFULLY });
         }
       });
     }
@@ -109,7 +112,7 @@ export const updateCustomer = (req, res) => {
           throw error;
         }
         if (results.rowCount) {
-          res.status(200).send(CUSTOMER_UPDATED_SUCCESSFULLY);
+          res.status(200).json({ message: CUSTOMER_UPDATED_SUCCESSFULLY });
         }
       }
     );
@@ -121,7 +124,7 @@ export const updateCustomer = (req, res) => {
       throw error;
     }
     if (parseInt(results.rows?.[0]?.count)) {
-      res.send(errorMessage);
+      res.status(200).json({ message: errorMessage });
     } else {
       saveCustomerData();
     }
@@ -133,7 +136,7 @@ export const updateCustomer = (req, res) => {
       throw error;
     }
     if (!results.rows.length) {
-      res.send(CUSTOMER_NOT_FOUND);
+      res.status(200).json({ message: CUSTOMER_NOT_FOUND });
     } else {
       if (
         results.rows[0].customer_email === customer_email &&
