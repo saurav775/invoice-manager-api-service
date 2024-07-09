@@ -101,8 +101,10 @@ export const createInvoice = (req, res) => {
         }
       );
       console.log(recordsInserted);
-      if (recordsInserted === invoice_details.length)
-        res.status(201).send(INVOICE_CREATED_SUCCESSFULLY);
+      if (recordsInserted === invoice_details.length) {
+        const responseJson = { message: INVOICE_CREATED_SUCCESSFULLY, payload: { invoice_id: generatedInvoiceId } }
+        res.status(201).json(responseJson);
+      }
     }
   );
 };

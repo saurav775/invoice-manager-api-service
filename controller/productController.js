@@ -47,10 +47,11 @@ export const createProduct = (req, res) => {
     if (parseInt(results.rows?.[0]?.count)) {
       res.send(PRODUCT_NAME_ALREADY_EXISTS);
     } else {
+      const newProductId = generateRandomId();
       pool.query(
         addProductQuery,
         [
-          generateRandomId(),
+          newProductId,
           product_name,
           product_rate_per_item,
           product_description,
@@ -60,7 +61,8 @@ export const createProduct = (req, res) => {
             console.log(error);
             throw error;
           }
-          res.status(201).send(PRODUCT_CREATED_SUCCESSFULLY);
+          const responseJson = { message: PRODUCT_CREATED_SUCCESSFULLY, payload: { product_id: newProductId } }
+          res.status(201).json(responseJson);
         }
       );
     }

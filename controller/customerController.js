@@ -54,15 +54,17 @@ export const createCustomer = (req, res) => {
       if (parseInt(results.rows?.[0]?.count)) {
         res.send(EMAIL_OR_PHONE_ALREADY_EXISTS);
       } else {
+        const newCustomerId = generateRandomId();
         pool.query(
           addCustomerQuery,
-          [generateRandomId(), customer_name, customer_email, customer_phone],
+          [newCustomerId, customer_name, customer_email, customer_phone],
           (error, results) => {
             if (error) {
               console.log(error);
               throw error;
             }
-            res.status(201).send(CUSTOMER_CREATED_SUCCESSFULLY);
+            const responseJson = { message: CUSTOMER_CREATED_SUCCESSFULLY, payload: { customer_id: newCustomerId } }
+            res.status(201).json(responseJson);
           }
         );
       }
