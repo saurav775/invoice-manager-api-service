@@ -2,7 +2,7 @@ import pool from "../database.js";
 import {
   getAllCustomersQuery,
   getCustomerByIdQuery,
-  checkEmailOrPhoneExistsQuery,
+  checkNameExistsQuery,
   addCustomerQuery,
   deleteCustomerQuery,
   checkEmailExistsQuery,
@@ -10,7 +10,7 @@ import {
   updateCustomerQuery,
 } from "../queries/customerQueries.js";
 import {
-  EMAIL_OR_PHONE_ALREADY_EXISTS,
+  NAME_ALREADY_EXISTS,
   CUSTOMER_NOT_FOUND,
   CUSTOMER_CREATED_SUCCESSFULLY,
   CUSTOMER_DELETED_SUCCESSFULLY,
@@ -43,36 +43,61 @@ export const getCustomerById = (req, res) => {
 
 export const createCustomer = (req, res) => {
   const { customer_name, customer_email, customer_phone } = req.body;
-  pool.query(
-    checkEmailOrPhoneExistsQuery,
-    [customer_email, customer_phone],
-    (error, results) => {
-      if (error) {
-        console.log(error);
-        throw error;
-      }
-      if (parseInt(results.rows?.[0]?.count)) {
-        res.status(200).json({ message: EMAIL_OR_PHONE_ALREADY_EXISTS });
-      } else {
-        const newCustomerId = generateRandomId();
-        pool.query(
-          addCustomerQuery,
-          [newCustomerId, customer_name, customer_email, customer_phone],
-          (error, results) => {
-            if (error) {
-              console.log(error);
-              throw error;
-            }
-            const responseJson = {
-              message: CUSTOMER_CREATED_SUCCESSFULLY,
-              payload: { customer_id: newCustomerId },
-            };
-            res.status(201).json(responseJson);
-          }
-        );
-      }
+  pool.query(checkNameExistsQuery, [customer_name], (error, results) => {
+    if (error) {
+      console.log(error);
+      throw error;
     }
-  );
+    if (parseInt(results.rows?.[0]?.count)) {
+      res.status(200).json({ message: NAME_ALREADY_EXISTS });
+    } else {
+      pool.query(checkEmailExistsQuery, [customer_email], (error, results) => {
+        if (error) {
+          console.log(error);
+          throw error;
+        }
+        if (parseInt(results.rows?.[0]?.count)) {
+          res.status(200).json({ message: EMAIL_ALREADY_EXISTS });
+        } else {
+          pool.query(
+            checkPhoneExistsQuery,
+            [customer_phone],
+            (error, results) => {
+              if (error) {
+                console.log(error);
+                throw error;
+              }
+              if (parseInt(results.rows?.[0]?.count)) {
+                res.status(200).json({ message: PHONE_ALREADY_EXISTS });
+              } else {
+                const newCustomerId = generateRandomId();
+                pool.query(
+                  addCustomerQuery,
+                  [
+                    newCustomerId,
+                    customer_name,
+                    customer_email,
+                    customer_phone,
+                  ],
+                  (error, results) => {
+                    if (error) {
+                      console.log(error);
+                      throw error;
+                    }
+                    const responseJson = {
+                      message: CUSTOMER_CREATED_SUCCESSFULLY,
+                      payload: { customer_id: newCustomerId },
+                    };
+                    res.status(201).json(responseJson);
+                  }
+                );
+              }
+            }
+          );
+        }
+      });
+    }
+  });
 };
 
 export const deleteCustomer = (req, res) => {
@@ -158,18 +183,6 @@ export const updateCustomer = (req, res) => {
             [customer_email],
             (error, results) => {
               customerDataAlreadyExists(error, results, EMAIL_ALREADY_EXISTS);
-            }
-          );
-        } else {
-          pool.query(
-            checkEmailOrPhoneExistsQuery,
-            [customer_email, customer_phone],
-            (error, results) => {
-              customerDataAlreadyExists(
-                error,
-                results,
-                EMAIL_OR_PHONE_ALREADY_EXISTS
-              );
             }
           );
         }

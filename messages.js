@@ -1,4 +1,4 @@
-export const EMAIL_OR_PHONE_ALREADY_EXISTS = "Email or phone already exits.";
+export const NAME_ALREADY_EXISTS = "Name already exits.";
 export const EMAIL_ALREADY_EXISTS = "Email already exits.";
 export const PHONE_ALREADY_EXISTS = "Phone already exits.";
 export const CUSTOMER_NOT_FOUND = "Customer does not exist";

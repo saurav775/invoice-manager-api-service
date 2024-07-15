@@ -1,8 +1,8 @@
 export const getAllCustomersQuery = "select * from customer";
 export const getCustomerByIdQuery =
   "select * from customer where customer_id = $1";
-export const checkEmailOrPhoneExistsQuery =
-  "select count(*) from customer where customer_email = $1 or customer_phone = $2";
+export const checkNameExistsQuery =
+  "select count(*) from customer where customer_name = $1";
 export const addCustomerQuery = "insert into customer values($1, $2, $3, $4)";
 export const deleteCustomerQuery =
   "delete from customer where customer_id = $1";
