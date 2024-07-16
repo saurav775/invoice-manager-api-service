@@ -16,6 +16,7 @@ import {
   INVOICE_CREATED_SUCCESSFULLY,
   INVOICE_NOT_FOUND,
   INVOICE_UPDATED_SUCCESSFULLY,
+  INVOICE_DELETED_SUCCESSFULLY
 } from "../messages.js";
 
 export const getInvoices = (req, res) => {
