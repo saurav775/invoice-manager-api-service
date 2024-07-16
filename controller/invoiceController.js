@@ -96,18 +96,17 @@ export const createInvoice = (req, res) => {
                 throw error;
               }
               recordsInserted++;
+              if (recordsInserted === invoice_details.length) {
+                const responseJson = {
+                  message: INVOICE_CREATED_SUCCESSFULLY,
+                  payload: { invoice_id: generatedInvoiceId },
+                };
+                res.status(201).json(responseJson);
+              }
             }
           );
         }
       );
-      console.log(recordsInserted);
-      if (recordsInserted === invoice_details.length) {
-        const responseJson = {
-          message: INVOICE_CREATED_SUCCESSFULLY,
-          payload: { invoice_id: generatedInvoiceId },
-        };
-        res.status(201).json(responseJson);
-      }
     }
   );
 };
