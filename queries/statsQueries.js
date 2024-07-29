@@ -1,0 +1,1 @@
+export const getDashboardStats = "select (select count(*) from customer) as customer_count, (select count(*) from product) as product_count, (select count(*) from invoice where invoice.order_status = 'RECEIVED') as total_orders_count, (select count(*) from invoice where invoice.order_status = 'COMPLETED') as total_orders_completed_count";

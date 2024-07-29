@@ -4,6 +4,7 @@ import { initDotEnv } from "./utils.js";
 import customerRoutes from "./routes/customerRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
+import { getStats } from "./controller/statsController.js";
 
 import { SERVER_RUNNING_MSG } from "./constants.js";
 
@@ -19,6 +20,8 @@ app.get("/", (req, res) => {
 app.use("/api/v1/customer", customerRoutes);
 app.use("/api/v1/product", productRoutes);
 app.use("/api/v1/invoice", invoiceRoutes);
+
+app.get("/api/v1/stats", getStats);
 
 // get access to env variables
 initDotEnv();
